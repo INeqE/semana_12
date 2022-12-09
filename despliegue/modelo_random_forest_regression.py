@@ -1,35 +1,33 @@
-import time
-import datetime
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import streamlit as st
 
-
 def app():
+    from pandas_datareader import data as pdr
+    import yfinance as yfin
+    yfin.pdr_override()
     st.title('Modelo Random Forest Regression')
 
     # Obtener datos de Yahoo Finance
     st.subheader("Obtener datos de Yahoo finance")
     start = st.date_input('Start Train' , value=pd.to_datetime('2014-1-1'))
-    end = st.date_input('End Train' , value=pd.to_datetime('2018-12-30'))
+    end = st.date_input('End Train' , value=pd.to_datetime('today'))
     user_input = st.text_input('Introducir cotización bursátil' , 'AMZN')
-    ticker= user_input
-    period1 = int(time.mktime(start))
-    period2 = int(time.mktime(end))
-    interval = '1d' # 1d, 1m
-    query_string = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker}?period1={period1}&period2={period2}&interval={interval}&events=history&includeAdjustedClose=true'
-    df_dis = pd.read_csv(query_string)
-
-    df_dis['symbol']=ticker
+    # ticker= user_input
+    # period1 = int(time.mktime(start))
+    # period2 = int(time.mktime(end))
+    # interval = '1d' # 1d, 1m
+    # query_string = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker}?period1={period1}&period2={period2}&interval={interval}&events=history&includeAdjustedClose=true'
+    # df_dis = pd.read_csv(query_string)
+    df_dis = pdr.get_data_yahoo(user_input, start, end)
     st.write(df_dis)
 
     st.subheader("Preprocesamiento de datos")
 
     #Establecer el índice como fecha
     st.write('Establecemos el índice como fecha y graficamos')
-    df_dis['Date'] = pd.to_datetime(df_dis.Date,format='%Y-%m-%d')
-    df_dis.index = df_dis['Date']
+    df_dis.index = pd.to_datetime(df_dis.index,format='%Y-%m-%d')
 
     #Realizar plot
     fig = plt.figure(figsize=(16,8))
