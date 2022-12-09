@@ -56,8 +56,8 @@ def app():
     end = st.date_input('End Train' , value=pd.to_datetime('2018-12-30'))
 
     df = yf.download(list(companies_dict.values()), start, end)
-
-    st.title('Clasificación de acciones')
+    st.title('Model - K-Means')
+    st.subheader('Clasificación de acciones')
 
     df1 = df.dropna()
     st.write(df1.describe())

@@ -40,7 +40,7 @@ def app():
     start_test = st.date_input('Start Test' , value=pd.to_datetime('2019-1-1'))
     end_test = st.date_input('End Test' , value=pd.to_datetime('today'))
     
-    st.title('Predicción de tendencia de acciones')
+    st.subheader('Predicción de tendencia de acciones')
 
     user_input = st.text_input('Introducir cotización bursátil' , 'AMZN')
     # obtener datos de 2014-2018 para entrenar nuestro modelo

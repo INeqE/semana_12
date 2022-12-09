@@ -13,18 +13,27 @@ from sklearn.metrics import classification_report
 
 def app():
 
-    st.title('Modelo SVC')
-    ticker='MSFT'
-    # st.subheader("Establecemos el año 2015")
-    period1 = int(time.mktime(datetime.datetime(2015, 1, 1, 0, 0).timetuple()))
-    period2 = int(time.mktime(datetime.datetime.now().timetuple()))
-    interval = '1d' # 1d, 1m
-    query_string = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker}?period1={period1}&period2={period2}&interval={interval}&events=history&includeAdjustedClose=true'
-    df_dis = pd.read_csv(query_string)
+    st.title('Modelo - SVC')
+    from pandas_datareader import data as pdr
+    import yfinance as yfin
+    yfin.pdr_override()
+
+    st.subheader("Obtener datos de Yahoo finance")
+    start = st.date_input('Start Train' , value=pd.to_datetime('2014-1-1'))
+    end = st.date_input('End Train' , value=pd.to_datetime('today'))
+    user_input = st.text_input('Introducir cotización bursátil' , 'MSFT')
+
+    df_dis = pdr.get_data_yahoo(user_input, start, end)
+    # ticker='MSFT'
+    # # st.subheader("Establecemos el año 2015")
+    # period1 = int(time.mktime(datetime.datetime(2015, 1, 1, 0, 0).timetuple()))
+    # period2 = int(time.mktime(datetime.datetime.now().timetuple()))
+    # interval = '1d' # 1d, 1m
+    # query_string = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker}?period1={period1}&period2={period2}&interval={interval}&events=history&includeAdjustedClose=true'
+    # df_dis = pd.read_csv(query_string)
 
     #Filtro por simbolo MSFT y obtención de dataframe
-    st.subheader("Filtramos por simbolo MSFT y obtenemos el dataframe")
-    df_dis['symbol']='MSFT'
+    st.subheader("Detalles de los datos")
     st.write(df_dis)
 
     # Creación de variables de predicción: Toma en cuenta precios de apertura (Open )y cierre (Close), precios pico (High) y bajo (Low)
@@ -54,9 +63,28 @@ def app():
     report = classification_report(y_test, y_predict, output_dict=True)
     st.write(pd.DataFrame(report))
 
-
-    st.subheader("Realizamos un test con datos ingresados")
-    test = [[1.160004 , 2.430001],[-0.110001, 1.050004]]
-    df = pd.DataFrame(test, columns=['Open-Close', 'High-Low'])
-    y_predict = modelo.predict(df)
-    st.write(y_predict)
+##########PLANTILLA####################
+    # Evaluación del modelo
+    from sklearn import metrics
+    import plotly.express as px
+    st.subheader('Evaluación del Modelo')
+    ## Métricas
+    MAE=metrics.mean_absolute_error(y_test, y_predict)
+    MSE=metrics.mean_squared_error(y_test, y_predict)
+    RMSE=np.sqrt(metrics.mean_squared_error(y_test, y_predict))
+    
+    metricas = {
+        'metrica' : ['Mean Absolute Error', 'Mean Squared Error', 'Root Mean Squared Error'],
+        'valor': [MAE, MSE, RMSE]
+    }
+    metricas = pd.DataFrame(metricas)  
+    ### Gráfica de las métricas
+    st.subheader('Métricas de rendimiento') 
+    fig = px.bar(        
+        metricas,
+        x = "metrica",
+        y = "valor",
+        title = f"Métricas del Modelo",
+        color="metrica"
+    )
+    st.plotly_chart(fig)
