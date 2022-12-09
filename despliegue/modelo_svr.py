@@ -15,7 +15,7 @@ import streamlit as st
 
 
 def app():
-  st.title('Model - K-Means')
+  st.title('Model - SVR')
   st.subheader
   plt.style.use('fivethirtyeight')
 
