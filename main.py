@@ -1,6 +1,6 @@
 import streamlit as st
 from multiapp import MultiApp
-from despliegue import home, modelo_random_forest_regression, modelo_svc, modelo_lstm, modelo_kmeans, modelo_svr
+from despliegue import home, modelo_random_forest_regression, modelo_svc, modelo_lstm, modelo_kmeans, modelo_svr, modelo_clustering_jerarquico_lq
 # from despliegue import modelo_lstm, modelo_arima, modelo_decision_tree, modelo_prophet,  modelo_svr
 
 
@@ -18,5 +18,6 @@ app.add_app("Modelo Random Forest Regression", modelo_random_forest_regression.a
 app.add_app("Modelo SVC", modelo_svc.app)
 app.add_app("Modelo SVR", modelo_svr.app)
 app.add_app("Modelo K-Means", modelo_kmeans.app)
+app.add_app("Modelo Clustering Jerarquico", modelo_clustering_jerarquico_lq.app)
 # The main app
 app.run()
